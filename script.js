@@ -81,6 +81,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Define categories and their question ranges
+const categories = [
+    { name: "Workplace and Career Patterns", questions: [1, 2, 3, 4, 5] },
+    { name: "Learning and Cognitive Style", questions: [6, 7, 8, 9, 10] },
+    { name: "Reading and Language Challenges", questions: [11, 12, 13, 14, 15, 16, 17, 18] },
+    { name: "Memory and Information Processing", questions: [19, 20, 21, 22, 23] },
+    { name: "Mathematical and Logical Thinking", questions: [24, 25, 26] },
+    { name: "Behavioral and Emotional Patterns", questions: [27, 28, 29, 30] },
+    { name: "Additional Characteristics", questions: [31, 32] }
+];
+
 // Assessment calculation and results
 function calculateResults(event) {
     event.preventDefault();
@@ -100,16 +111,40 @@ function calculateResults(event) {
         return;
     }
     
-    // Calculate total score
+    // Calculate total score and category scores
     let totalScore = 0;
     const maxScore = totalQuestions * 5; // Maximum possible score
+    const categoryScores = [];
     
+    // Calculate total score
     for (let i = 1; i <= totalQuestions; i++) {
         const selectedInput = document.querySelector(`input[name="q${i}"]:checked`);
         if (selectedInput) {
             totalScore += parseInt(selectedInput.value);
         }
     }
+    
+    // Calculate category scores
+    categories.forEach(category => {
+        let categoryScore = 0;
+        let categoryMaxScore = category.questions.length * 5;
+        
+        category.questions.forEach(questionNum => {
+            const selectedInput = document.querySelector(`input[name="q${questionNum}"]:checked`);
+            if (selectedInput) {
+                categoryScore += parseInt(selectedInput.value);
+            }
+        });
+        
+        const categoryPercentage = Math.round((categoryScore / categoryMaxScore) * 100);
+        categoryScores.push({
+            name: category.name,
+            score: categoryScore,
+            maxScore: categoryMaxScore,
+            percentage: categoryPercentage,
+            questionCount: category.questions.length
+        });
+    });
     
     // Calculate percentage and risk level
     const scorePercentage = Math.round((totalScore / maxScore) * 100);
@@ -141,6 +176,9 @@ function calculateResults(event) {
     probabilityLevel.className = `probability-level ${riskClass}`;
     resultsText.textContent = resultText;
     
+    // Display category breakdown
+    displayCategoryBreakdown(categoryScores);
+    
     // Hide form and show results
     document.getElementById('dyslexiaAssessment').style.display = 'none';
     resultsSection.classList.add('show');
@@ -159,6 +197,42 @@ function calculateResults(event) {
     };
     
     localStorage.setItem('dyslexiaAssessmentResults', JSON.stringify(assessmentResults));
+}
+
+// Function to display category breakdown
+function displayCategoryBreakdown(categoryScores) {
+    const categoryResultsContainer = document.getElementById('categoryResults');
+    categoryResultsContainer.innerHTML = '';
+    
+    categoryScores.forEach(category => {
+        const categoryItem = document.createElement('div');
+        categoryItem.className = 'category-item';
+        
+        // Determine score level for styling
+        let scoreClass = 'low-score';
+        let scoreBadgeClass = 'low';
+        if (category.percentage >= 70) {
+            scoreClass = 'high-score';
+            scoreBadgeClass = 'high';
+        } else if (category.percentage >= 50) {
+            scoreClass = 'medium-score';
+            scoreBadgeClass = 'medium';
+        }
+        
+        categoryItem.classList.add(scoreClass);
+        
+        categoryItem.innerHTML = `
+            <div class="category-info">
+                <div class="category-name">${category.name}</div>
+                <div class="category-details">${category.score} out of ${category.maxScore} points • ${category.questionCount} questions</div>
+            </div>
+            <div class="category-score ${scoreBadgeClass}">
+                ${category.percentage}%
+            </div>
+        `;
+        
+        categoryResultsContainer.appendChild(categoryItem);
+    });
 }
 
 // Reset assessment function
