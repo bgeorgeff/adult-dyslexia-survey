@@ -51,7 +51,7 @@ function speakText(text) {
 }
 
 function removePlayingClass() {
-    const playingIcons = document.querySelectorAll('.speaker-icon.playing, .question-speaker.playing');
+    const playingIcons = document.querySelectorAll('.speaker-icon.playing, .question-speaker.playing, .intro-speaker.playing');
     playingIcons.forEach(icon => {
         icon.classList.remove('playing');
     });
