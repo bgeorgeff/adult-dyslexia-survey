@@ -399,10 +399,8 @@ if ('serviceWorker' in navigator) {
 }
 
 // Hover-to-speak for answer choices
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.option label').forEach(function(label) {
-        label.addEventListener('mouseenter', function() {
-            speakText(label.textContent.trim());
-        });
+document.querySelectorAll('.option label').forEach(function(label) {
+    label.addEventListener('mouseenter', function() {
+        speakText(label.textContent.trim());
     });
 });
