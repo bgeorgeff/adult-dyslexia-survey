@@ -401,8 +401,22 @@ if ('serviceWorker' in navigator) {
 }
 
 // Hover-to-speak for answer choices
-document.querySelectorAll('.option label').forEach(function(label) {
-    label.addEventListener('mouseenter', function() {
-        speakText(label.textContent.trim());
+(function() {
+    let activeLabel = null;
+    document.addEventListener('mouseover', function(e) {
+        const target = e.target;
+        if (target.tagName === 'LABEL' && target.closest('.option')) {
+            if (target !== activeLabel) {
+                activeLabel = target;
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(target.textContent.trim());
+                    utterance.rate = 0.8;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+        }
     });
-});
+})();
