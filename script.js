@@ -106,10 +106,13 @@ function calculateResults(event) {
         }
     }
     
+    const errorNotification = document.getElementById('errorNotification');
     if (unansweredQuestions.length > 0) {
-        alert(`Please answer all questions before submitting. Missing questions: ${unansweredQuestions.join(', ')}`);
+        errorNotification.classList.add('visible');
+        errorNotification.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
+    errorNotification.classList.remove('visible');
     
     // Calculate total score and category scores
     let totalScore = 0;
