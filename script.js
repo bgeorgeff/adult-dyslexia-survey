@@ -24,7 +24,9 @@ function speakText(text) {
     currentSpeech.volume = 1;
 
     // Add playing class to the clicked icon
-    const clickedIcon = event.target.closest('svg');
+    const clickedIcon = (typeof event !== 'undefined' && event && event.target)
+        ? event.target.closest('svg')
+        : null;
     if (clickedIcon) {
         clickedIcon.classList.add('playing');
     }
