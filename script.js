@@ -155,11 +155,11 @@ function calculateResults(event) {
     
     // Risk assessment based on scoring thresholds
     if (scorePercentage < 51) {
-        riskLevel = 'Unlikely Chance';
+        riskLevel = 'Low Probability';
         riskClass = 'medium';
         resultText = `Your responses suggest a medium probability of dyslexia characteristics. You experience some patterns commonly associated with adult dyslexia. Consider consulting with a qualified professional who specializes in adult learning differences for a comprehensive evaluation and potential support strategies.`;
     } else if (scorePercentage < 80) {
-        riskLevel = 'Low Probability';
+        riskLevel = 'Medium Probability';
         riskClass = 'low';
         resultText = `Your responses suggest a low probability of dyslexia characteristics. Your score indicates that you experience few of the common patterns associated with adult dyslexia. However, if you have specific concerns about learning differences, consider speaking with a professional for personalized guidance.`;
     } else {
