@@ -397,3 +397,12 @@ if ('serviceWorker' in navigator) {
         // This can be implemented later for offline assessment capability
     });
 }
+
+// Hover-to-speak for answer choices
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.option label').forEach(function(label) {
+        label.addEventListener('mouseenter', function() {
+            speakText(label.textContent.trim());
+        });
+    });
+});
