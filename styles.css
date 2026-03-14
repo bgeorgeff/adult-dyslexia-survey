@@ -34,6 +34,20 @@ body {
     z-index: 100;
     border-radius: 20px 20px 0 0;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: padding 0.3s ease;
+}
+
+.header.collapsed {
+    padding: 15px 30px;
+}
+
+.header.collapsed #headerSubtext {
+    display: none;
+}
+
+.header.collapsed h1 {
+    margin-bottom: 5px;
+    font-size: 1.6rem;
 }
 
 .header-spacer {

@@ -77,6 +77,19 @@ function updateProgress() {
     
     progressBar.style.width = progressPercent + '%';
     progressText.textContent = progressPercent + '%';
+
+    var header = document.getElementById('siteHeader');
+    if (answeredQuestions > 0) {
+        if (!header.classList.contains('collapsed')) {
+            header.classList.add('collapsed');
+            setTimeout(updateSpacerHeight, 350);
+        }
+    } else {
+        if (header.classList.contains('collapsed')) {
+            header.classList.remove('collapsed');
+            setTimeout(updateSpacerHeight, 350);
+        }
+    }
 }
 
 // Add event listeners to all radio buttons for progress tracking
@@ -407,17 +420,15 @@ if ('serviceWorker' in navigator) {
 }
 
 // Fixed header spacer height
-(function() {
-    function setSpacerHeight() {
-        const header = document.getElementById('siteHeader');
-        const spacer = document.getElementById('headerSpacer');
-        if (header && spacer) {
-            spacer.style.height = header.offsetHeight + 'px';
-        }
+function updateSpacerHeight() {
+    var header = document.getElementById('siteHeader');
+    var spacer = document.getElementById('headerSpacer');
+    if (header && spacer) {
+        spacer.style.height = header.offsetHeight + 'px';
     }
-    setSpacerHeight();
-    window.addEventListener('resize', setSpacerHeight);
-})();
+}
+updateSpacerHeight();
+window.addEventListener('resize', updateSpacerHeight);
 
 // Click-to-speak for answer choices
 (function() {
