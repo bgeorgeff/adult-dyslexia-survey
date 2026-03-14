@@ -37,18 +37,6 @@ body {
     transition: padding 0.3s ease;
 }
 
-.header.collapsed {
-    padding: 15px 30px;
-}
-
-.header.collapsed #headerSubtext {
-    display: none;
-}
-
-.header.collapsed h1 {
-    margin-bottom: 5px;
-    font-size: 1.6rem;
-}
 
 .header-spacer {
     visibility: hidden;

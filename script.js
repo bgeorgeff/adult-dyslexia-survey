@@ -78,18 +78,6 @@ function updateProgress() {
     progressBar.style.width = progressPercent + '%';
     progressText.textContent = progressPercent + '%';
 
-    var header = document.getElementById('siteHeader');
-    if (answeredQuestions > 0) {
-        if (!header.classList.contains('collapsed')) {
-            header.classList.add('collapsed');
-            setTimeout(updateSpacerHeight, 350);
-        }
-    } else {
-        if (header.classList.contains('collapsed')) {
-            header.classList.remove('collapsed');
-            setTimeout(updateSpacerHeight, 350);
-        }
-    }
 }
 
 // Add event listeners to all radio buttons for progress tracking
