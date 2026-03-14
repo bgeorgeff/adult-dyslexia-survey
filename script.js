@@ -1,25 +1,22 @@
 // Text-to-Speech functionality
 let currentSpeech = null;
 let isPlaying = false;
-let currentPlayingIcon = null;
+let currentSpeechText = null;
+let iconSpeechActive = false;
 
 function speakText(text) {
-    // Check if Web Speech API is supported
     if (!('speechSynthesis' in window)) {
         alert('Sorry, your browser does not support text-to-speech functionality.');
         return;
     }
 
-    const clickedIcon = (typeof event !== 'undefined' && event && event.target)
-        ? event.target.closest('svg')
-        : null;
-
-    if (isPlaying && clickedIcon && clickedIcon === currentPlayingIcon) {
+    if (isPlaying && currentSpeechText === text) {
         speechSynthesis.cancel();
         removePlayingClass();
         currentSpeech = null;
         isPlaying = false;
-        currentPlayingIcon = null;
+        currentSpeechText = null;
+        iconSpeechActive = false;
         return;
     }
 
@@ -32,28 +29,31 @@ function speakText(text) {
     currentSpeech.rate = 0.8;
     currentSpeech.pitch = 1;
     currentSpeech.volume = 1;
+    currentSpeechText = text;
+    isPlaying = true;
+    iconSpeechActive = true;
 
+    const clickedIcon = (typeof event !== 'undefined' && event && event.target)
+        ? event.target.closest('svg')
+        : null;
     if (clickedIcon) {
         clickedIcon.classList.add('playing');
-        currentPlayingIcon = clickedIcon;
     }
-
-    currentSpeech.onstart = function() {
-        isPlaying = true;
-    };
 
     currentSpeech.onend = function() {
         isPlaying = false;
         removePlayingClass();
         currentSpeech = null;
-        currentPlayingIcon = null;
+        currentSpeechText = null;
+        iconSpeechActive = false;
     };
 
     currentSpeech.onerror = function() {
         isPlaying = false;
         removePlayingClass();
         currentSpeech = null;
-        currentPlayingIcon = null;
+        currentSpeechText = null;
+        iconSpeechActive = false;
     };
 
     speechSynthesis.speak(currentSpeech);
@@ -439,6 +439,7 @@ if ('serviceWorker' in navigator) {
 
     document.addEventListener('mouseover', function(e) {
         if (!speechUnlocked) return;
+        if (iconSpeechActive) return;
         const target = e.target;
         if (target.tagName === 'LABEL' && target.closest('.option')) {
             if (target !== activeLabel) {
