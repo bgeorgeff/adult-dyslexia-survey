@@ -419,39 +419,30 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('resize', setSpacerHeight);
 })();
 
-// Hover-to-speak for answer choices
+// Click-to-speak for answer choices
 (function() {
-    let speechUnlocked = false;
-    let activeLabel = null;
-
-    function unlockSpeech() {
-        if (speechUnlocked) return;
-        if (!window.speechSynthesis) return;
-        const silent = new SpeechSynthesisUtterance('');
-        silent.volume = 0;
-        window.speechSynthesis.speak(silent);
-        speechUnlocked = true;
-    }
-
-    document.addEventListener('click', unlockSpeech);
-    document.addEventListener('keydown', unlockSpeech);
-
-    document.addEventListener('mouseover', function(e) {
-        if (!speechUnlocked) return;
+    var lastOptionText = null;
+    var lastOptionTime = 0;
+    document.addEventListener('click', function(e) {
+        var option = e.target.closest('.option');
+        if (!option) return;
         if (iconSpeechActive) return;
-        const target = e.target;
-        if (target.tagName === 'LABEL' && target.closest('.option')) {
-            if (target !== activeLabel) {
-                activeLabel = target;
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(target.textContent.trim());
-                utterance.rate = 0.8;
-                utterance.pitch = 1;
-                utterance.volume = 1;
-                window.speechSynthesis.speak(utterance);
-            }
-        } else {
-            activeLabel = null;
-        }
+        var label = option.querySelector('label');
+        if (!label) return;
+        var text = label.textContent.trim();
+        if (!text) return;
+        var now = Date.now();
+        if (text === lastOptionText && now - lastOptionTime < 300) return;
+        lastOptionText = text;
+        lastOptionTime = now;
+        speechSynthesis.cancel();
+        removePlayingClass();
+        currentPlayingText = null;
+        currentUtteranceRef = null;
+        var utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.8;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        speechSynthesis.speak(utterance);
     });
 })();
