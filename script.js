@@ -1,8 +1,7 @@
 // Text-to-Speech functionality
-let lastSpokenText = null;
-let iconSpeechActive = false;
-let isSpeaking = false;
-let speechGeneration = 0;
+var iconSpeechActive = false;
+var currentPlayingText = null;
+var currentUtteranceRef = null;
 
 function speakText(text) {
     if (!('speechSynthesis' in window)) {
@@ -10,58 +9,56 @@ function speakText(text) {
         return;
     }
 
-    if (isSpeaking && lastSpokenText === text) {
-        speechGeneration++;
+    var icon = null;
+    try { icon = event.currentTarget; } catch(e) {}
+    if (!icon) { try { icon = event.target.closest('svg'); } catch(e) {} }
+
+    if (currentPlayingText === text) {
         speechSynthesis.cancel();
-        isSpeaking = false;
-        lastSpokenText = null;
-        iconSpeechActive = false;
         removePlayingClass();
+        currentPlayingText = null;
+        currentUtteranceRef = null;
+        iconSpeechActive = false;
         return;
     }
 
-    speechGeneration++;
-    var gen = speechGeneration;
+    var utterance = new SpeechSynthesisUtterance(text);
+    currentUtteranceRef = utterance;
     speechSynthesis.cancel();
     removePlayingClass();
 
-    var utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.8;
     utterance.pitch = 1;
     utterance.volume = 1;
-    isSpeaking = true;
-    lastSpokenText = text;
+    currentPlayingText = text;
     iconSpeechActive = true;
 
-    var clickedIcon = (typeof event !== 'undefined' && event && event.target)
-        ? event.target.closest('svg')
-        : null;
-    if (clickedIcon) {
-        clickedIcon.classList.add('playing');
+    if (icon) {
+        icon.classList.add('playing');
     }
 
     utterance.onend = function() {
-        if (gen !== speechGeneration) return;
-        isSpeaking = false;
-        lastSpokenText = null;
-        iconSpeechActive = false;
+        if (currentUtteranceRef !== utterance) return;
         removePlayingClass();
+        currentPlayingText = null;
+        currentUtteranceRef = null;
+        iconSpeechActive = false;
     };
 
     utterance.onerror = function() {
-        if (gen !== speechGeneration) return;
-        isSpeaking = false;
-        lastSpokenText = null;
-        iconSpeechActive = false;
+        if (currentUtteranceRef !== utterance) return;
         removePlayingClass();
+        currentPlayingText = null;
+        currentUtteranceRef = null;
+        iconSpeechActive = false;
     };
 
     speechSynthesis.speak(utterance);
 }
 
 function removePlayingClass() {
-    const playingIcons = document.querySelectorAll('.speaker-icon.playing, .question-speaker.playing, .intro-speaker.playing');
-    playingIcons.forEach(icon => {
+    var playingIcons = document.querySelectorAll('.speaker-icon.playing, .question-speaker.playing, .intro-speaker.playing');
+    playingIcons.forEach(function(icon) {
         icon.classList.remove('playing');
     });
 }
@@ -265,11 +262,12 @@ function resetAssessment() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Stop any playing speech
-    if (currentSpeech) {
+    if (currentPlayingText) {
         speechSynthesis.cancel();
         removePlayingClass();
-        currentSpeech = null;
-        isPlaying = false;
+        currentPlayingText = null;
+        currentUtteranceRef = null;
+        iconSpeechActive = false;
     }
 }
 
@@ -282,19 +280,20 @@ document.addEventListener('keydown', function(event) {
     }
     
     // Escape to stop current speech
-    if (event.code === 'Escape' && currentSpeech) {
+    if (event.code === 'Escape' && currentPlayingText) {
         speechSynthesis.cancel();
         removePlayingClass();
-        currentSpeech = null;
-        isPlaying = false;
+        currentPlayingText = null;
+        currentUtteranceRef = null;
+        iconSpeechActive = false;
     }
 });
 
 // Handle page visibility change to pause speech when tab is not visible
 document.addEventListener('visibilitychange', function() {
-    if (document.hidden && currentSpeech) {
+    if (document.hidden && currentPlayingText) {
         speechSynthesis.pause();
-    } else if (!document.hidden && currentSpeech && speechSynthesis.paused) {
+    } else if (!document.hidden && currentPlayingText && speechSynthesis.paused) {
         speechSynthesis.resume();
     }
 });
