@@ -189,12 +189,14 @@ function calculateResults(event) {
     // Display category breakdown
     displayCategoryBreakdown(categoryScores);
     
-    // Hide form and show results
+    // Hide form, header, and show results
     document.getElementById('dyslexiaAssessment').style.display = 'none';
+    document.getElementById('siteHeader').style.display = 'none';
+    document.getElementById('headerSpacer').style.display = 'none';
     resultsSection.classList.add('show');
     
-    // Scroll to results
-    resultsSection.scrollIntoView({ behavior: 'smooth' });
+    // Scroll to top to show results
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Save results to localStorage for potential future reference
     const assessmentResults = {
@@ -255,8 +257,10 @@ function resetAssessment() {
     answeredQuestions = 0;
     updateProgress();
     
-    // Hide results and show form
+    // Hide results, show header and form
     document.getElementById('results').classList.remove('show');
+    document.getElementById('siteHeader').style.display = '';
+    document.getElementById('headerSpacer').style.display = '';
     form.style.display = 'block';
     
     // Scroll to top
