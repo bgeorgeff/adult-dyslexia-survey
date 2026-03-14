@@ -161,14 +161,14 @@ function calculateResults(event) {
     let riskLevel, riskClass, resultText;
     
     // Risk assessment based on scoring thresholds
-    if (scorePercentage < 51) {
+    if (scorePercentage <= 50) {
         riskLevel = 'Low Probability';
-        riskClass = 'medium';
-        resultText = `Your responses suggest a medium probability of dyslexia characteristics. You experience some patterns commonly associated with adult dyslexia. Consider consulting with a qualified professional who specializes in adult learning differences for a comprehensive evaluation and potential support strategies.`;
-    } else if (scorePercentage < 80) {
-        riskLevel = 'Medium Probability';
         riskClass = 'low';
         resultText = `Your responses suggest a low probability of dyslexia characteristics. Your score indicates that you experience few of the common patterns associated with adult dyslexia. However, if you have specific concerns about learning differences, consider speaking with a professional for personalized guidance.`;
+    } else if (scorePercentage <= 79) {
+        riskLevel = 'Medium Probability';
+        riskClass = 'medium';
+        resultText = `Your responses suggest a medium probability of dyslexia characteristics. You experience some patterns commonly associated with adult dyslexia. Consider consulting with a qualified professional who specializes in adult learning differences for a comprehensive evaluation and potential support strategies.`;
     } else {
         riskLevel = 'High Probability';
         riskClass = 'high';
@@ -223,10 +223,10 @@ function displayCategoryBreakdown(categoryScores) {
         // Determine score level for styling
         let scoreClass = 'low-score';
         let scoreBadgeClass = 'low';
-        if (category.percentage >= 70) {
+        if (category.percentage >= 80) {
             scoreClass = 'high-score';
             scoreBadgeClass = 'high';
-        } else if (category.percentage >= 50) {
+        } else if (category.percentage >= 51) {
             scoreClass = 'medium-score';
             scoreBadgeClass = 'medium';
         }
