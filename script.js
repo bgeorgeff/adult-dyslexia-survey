@@ -1,6 +1,8 @@
 // Text-to-Speech functionality
 let lastSpokenText = null;
 let iconSpeechActive = false;
+let isSpeaking = false;
+let speechGeneration = 0;
 
 function speakText(text) {
     if (!('speechSynthesis' in window)) {
@@ -8,25 +10,30 @@ function speakText(text) {
         return;
     }
 
-    if (speechSynthesis.speaking && lastSpokenText === text) {
+    if (isSpeaking && lastSpokenText === text) {
+        speechGeneration++;
         speechSynthesis.cancel();
-        removePlayingClass();
+        isSpeaking = false;
         lastSpokenText = null;
         iconSpeechActive = false;
+        removePlayingClass();
         return;
     }
 
+    speechGeneration++;
+    var gen = speechGeneration;
     speechSynthesis.cancel();
     removePlayingClass();
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    var utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.8;
     utterance.pitch = 1;
     utterance.volume = 1;
+    isSpeaking = true;
     lastSpokenText = text;
     iconSpeechActive = true;
 
-    const clickedIcon = (typeof event !== 'undefined' && event && event.target)
+    var clickedIcon = (typeof event !== 'undefined' && event && event.target)
         ? event.target.closest('svg')
         : null;
     if (clickedIcon) {
@@ -34,15 +41,19 @@ function speakText(text) {
     }
 
     utterance.onend = function() {
-        removePlayingClass();
+        if (gen !== speechGeneration) return;
+        isSpeaking = false;
         lastSpokenText = null;
         iconSpeechActive = false;
+        removePlayingClass();
     };
 
     utterance.onerror = function() {
-        removePlayingClass();
+        if (gen !== speechGeneration) return;
+        isSpeaking = false;
         lastSpokenText = null;
         iconSpeechActive = false;
+        removePlayingClass();
     };
 
     speechSynthesis.speak(utterance);
