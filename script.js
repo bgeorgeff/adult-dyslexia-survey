@@ -1,7 +1,5 @@
 // Text-to-Speech functionality
-let currentSpeech = null;
-let isPlaying = false;
-let currentSpeechText = null;
+let lastSpokenText = null;
 let iconSpeechActive = false;
 
 function speakText(text) {
@@ -10,27 +8,22 @@ function speakText(text) {
         return;
     }
 
-    if (isPlaying && currentSpeechText === text) {
+    if (speechSynthesis.speaking && lastSpokenText === text) {
         speechSynthesis.cancel();
         removePlayingClass();
-        currentSpeech = null;
-        isPlaying = false;
-        currentSpeechText = null;
+        lastSpokenText = null;
         iconSpeechActive = false;
         return;
     }
 
-    if (currentSpeech) {
-        speechSynthesis.cancel();
-        removePlayingClass();
-    }
+    speechSynthesis.cancel();
+    removePlayingClass();
 
-    currentSpeech = new SpeechSynthesisUtterance(text);
-    currentSpeech.rate = 0.8;
-    currentSpeech.pitch = 1;
-    currentSpeech.volume = 1;
-    currentSpeechText = text;
-    isPlaying = true;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.8;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    lastSpokenText = text;
     iconSpeechActive = true;
 
     const clickedIcon = (typeof event !== 'undefined' && event && event.target)
@@ -40,23 +33,19 @@ function speakText(text) {
         clickedIcon.classList.add('playing');
     }
 
-    currentSpeech.onend = function() {
-        isPlaying = false;
+    utterance.onend = function() {
         removePlayingClass();
-        currentSpeech = null;
-        currentSpeechText = null;
+        lastSpokenText = null;
         iconSpeechActive = false;
     };
 
-    currentSpeech.onerror = function() {
-        isPlaying = false;
+    utterance.onerror = function() {
         removePlayingClass();
-        currentSpeech = null;
-        currentSpeechText = null;
+        lastSpokenText = null;
         iconSpeechActive = false;
     };
 
-    speechSynthesis.speak(currentSpeech);
+    speechSynthesis.speak(utterance);
 }
 
 function removePlayingClass() {
