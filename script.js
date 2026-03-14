@@ -427,8 +427,8 @@ if ('serviceWorker' in navigator) {
         speechUnlocked = true;
     }
 
-    document.addEventListener('click', unlockSpeech, { once: false });
-    document.addEventListener('keydown', unlockSpeech, { once: false });
+    document.addEventListener('click', unlockSpeech);
+    document.addEventListener('keydown', unlockSpeech);
 
     document.addEventListener('mouseover', function(e) {
         if (!speechUnlocked) return;
@@ -443,6 +443,8 @@ if ('serviceWorker' in navigator) {
                 utterance.volume = 1;
                 window.speechSynthesis.speak(utterance);
             }
+        } else {
+            activeLabel = null;
         }
     });
 })();
