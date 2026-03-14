@@ -1,37 +1,43 @@
 // Text-to-Speech functionality
 let currentSpeech = null;
 let isPlaying = false;
+let currentPlayingIcon = null;
 
 function speakText(text) {
-    // Stop any current speech
-    if (currentSpeech) {
-        speechSynthesis.cancel();
-        removePlayingClass();
-    }
-
     // Check if Web Speech API is supported
     if (!('speechSynthesis' in window)) {
         alert('Sorry, your browser does not support text-to-speech functionality.');
         return;
     }
 
-    // Create new speech instance
+    const clickedIcon = (typeof event !== 'undefined' && event && event.target)
+        ? event.target.closest('svg')
+        : null;
+
+    if (isPlaying && clickedIcon && clickedIcon === currentPlayingIcon) {
+        speechSynthesis.cancel();
+        removePlayingClass();
+        currentSpeech = null;
+        isPlaying = false;
+        currentPlayingIcon = null;
+        return;
+    }
+
+    if (currentSpeech) {
+        speechSynthesis.cancel();
+        removePlayingClass();
+    }
+
     currentSpeech = new SpeechSynthesisUtterance(text);
-    
-    // Configure speech settings
     currentSpeech.rate = 0.8;
     currentSpeech.pitch = 1;
     currentSpeech.volume = 1;
 
-    // Add playing class to the clicked icon
-    const clickedIcon = (typeof event !== 'undefined' && event && event.target)
-        ? event.target.closest('svg')
-        : null;
     if (clickedIcon) {
         clickedIcon.classList.add('playing');
+        currentPlayingIcon = clickedIcon;
     }
 
-    // Set up event listeners
     currentSpeech.onstart = function() {
         isPlaying = true;
     };
@@ -40,15 +46,16 @@ function speakText(text) {
         isPlaying = false;
         removePlayingClass();
         currentSpeech = null;
+        currentPlayingIcon = null;
     };
 
     currentSpeech.onerror = function() {
         isPlaying = false;
         removePlayingClass();
         currentSpeech = null;
+        currentPlayingIcon = null;
     };
 
-    // Speak the text
     speechSynthesis.speak(currentSpeech);
 }
 
