@@ -400,22 +400,48 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// Fixed header spacer height
+(function() {
+    function setSpacerHeight() {
+        const header = document.getElementById('siteHeader');
+        const spacer = document.getElementById('headerSpacer');
+        if (header && spacer) {
+            spacer.style.height = header.offsetHeight + 'px';
+        }
+    }
+    setSpacerHeight();
+    window.addEventListener('resize', setSpacerHeight);
+})();
+
 // Hover-to-speak for answer choices
 (function() {
+    let speechUnlocked = false;
     let activeLabel = null;
+
+    function unlockSpeech() {
+        if (speechUnlocked) return;
+        if (!window.speechSynthesis) return;
+        const silent = new SpeechSynthesisUtterance('');
+        silent.volume = 0;
+        window.speechSynthesis.speak(silent);
+        speechUnlocked = true;
+    }
+
+    document.addEventListener('click', unlockSpeech, { once: false });
+    document.addEventListener('keydown', unlockSpeech, { once: false });
+
     document.addEventListener('mouseover', function(e) {
+        if (!speechUnlocked) return;
         const target = e.target;
         if (target.tagName === 'LABEL' && target.closest('.option')) {
             if (target !== activeLabel) {
                 activeLabel = target;
-                if (window.speechSynthesis) {
-                    window.speechSynthesis.cancel();
-                    const utterance = new SpeechSynthesisUtterance(target.textContent.trim());
-                    utterance.rate = 0.8;
-                    utterance.pitch = 1;
-                    utterance.volume = 1;
-                    window.speechSynthesis.speak(utterance);
-                }
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(target.textContent.trim());
+                utterance.rate = 0.8;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                window.speechSynthesis.speak(utterance);
             }
         }
     });
