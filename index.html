@@ -6,1095 +6,518 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Adult Dyslexia Survey</title>
-    <link rel="stylesheet" href="styles.css?v=10">
+    <title>Adult Dyslexia Test — Free, Private Screener You Can Listen To</title>
+    <meta name="description" content="A free, private adult dyslexia screener you can listen to. Answer 22 quick questions across seven research-based areas and see whether your everyday experiences line up with common signs of dyslexia. Not a diagnosis.">
+    <link rel="stylesheet" href="ida-style.css">
+    <script>
+        // Apply saved reading-comfort preferences before first paint (avoids a flash).
+        (function () {
+            try {
+                var p = JSON.parse(localStorage.getItem('dyslexiaComfortPrefs') || '{}');
+                var r = document.documentElement;
+                if (p.textsize) r.setAttribute('data-textsize', p.textsize);
+                if (p.spacing) r.setAttribute('data-spacing', p.spacing);
+                if (p.font) r.setAttribute('data-font', p.font);
+                if (p.tint) r.setAttribute('data-tint', p.tint);
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
 </head>
 <body>
     <div class="container">
         <div class="header" id="siteHeader">
-            <h1>Adult Dyslexia Survey</h1>
+            <h1>Adult Dyslexia Quick Screener</h1>
             <p id="headerSubtext">
-                <svg class="intro-speaker" onclick="speakText('Adult Dyslexia Survey. This survey compares your experiences to characteristics commonly associated with adult dyslexia. It does not diagnose dyslexia.')" viewBox="0 0 24 24">
+                <svg class="intro-speaker" onclick="speakText('Adult Dyslexia Quick Screener. Twenty-two quick questions across seven areas commonly linked with dyslexia in adults. This is a self-check, not a diagnosis.')" viewBox="0 0 24 24">
                     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                 </svg>
-                This survey compares your experiences to characteristics commonly associated with adult dyslexia. It does not diagnose dyslexia.
+                Twenty-two quick questions across seven areas commonly linked with dyslexia in adults. This is a self-check, not a diagnosis.
             </p>
+        </div>
+
+        <div class="comfort" id="comfort">
+            <button type="button" class="comfort-toggle" id="comfortToggle" aria-expanded="false" aria-controls="comfortPanel">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v3h5.5v12h3V7H19V4H5z"/></svg>
+                <span>Reading comfort</span>
+            </button>
+            <div class="comfort-panel" id="comfortPanel" hidden>
+                <div class="comfort-group">
+                    <span class="comfort-label" id="comfortTextsizeLabel">Text size</span>
+                    <div class="comfort-options" data-pref="textsize" role="group" aria-labelledby="comfortTextsizeLabel">
+                        <button type="button" data-value="normal">Normal</button>
+                        <button type="button" data-value="large">Large</button>
+                        <button type="button" data-value="xlarge">Largest</button>
+                    </div>
+                </div>
+                <div class="comfort-group">
+                    <span class="comfort-label" id="comfortSpacingLabel">Spacing</span>
+                    <div class="comfort-options" data-pref="spacing" role="group" aria-labelledby="comfortSpacingLabel">
+                        <button type="button" data-value="normal">Normal</button>
+                        <button type="button" data-value="relaxed">Relaxed</button>
+                    </div>
+                </div>
+                <div class="comfort-group">
+                    <span class="comfort-label" id="comfortFontLabel">Font</span>
+                    <div class="comfort-options" data-pref="font" role="group" aria-labelledby="comfortFontLabel">
+                        <button type="button" data-value="default">Default</button>
+                        <button type="button" data-value="lexend">Easy-read</button>
+                    </div>
+                </div>
+                <div class="comfort-group">
+                    <span class="comfort-label" id="comfortTintLabel">Background</span>
+                    <div class="comfort-options" data-pref="tint" role="group" aria-labelledby="comfortTintLabel">
+                        <button type="button" data-value="cream">Cream</button>
+                        <button type="button" data-value="blue">Blue</button>
+                        <button type="button" data-value="peach">Peach</button>
+                        <button type="button" data-value="grey">Grey</button>
+                    </div>
+                </div>
+                <button type="button" class="comfort-reset" id="comfortReset">Reset to default</button>
+            </div>
+        </div>
+
+        <div class="progress-sticky" id="progressSticky">
             <div class="progress-container">
                 <div class="progress-bar" id="progressBar"></div>
                 <span class="progress-text" id="progressText">0%</span>
             </div>
         </div>
+
         <div class="header-spacer" id="headerSpacer"></div>
 
         <form id="dyslexiaAssessment" class="survey-content">
-            <!-- Workplace and Career Patterns -->
+
+            <!-- "Not a diagnosis" intro card -->
+            <div class="intro-card">
+                <svg class="intro-card-speaker" onclick="speakText('Before you start. This screener looks for patterns often linked with dyslexia in adults. It cannot diagnose dyslexia. Only a qualified professional can do that. There are no right or wrong answers, and your responses stay on your device. Answer based on your everyday experience, and take your time.')" viewBox="0 0 24 24">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                </svg>
+                <div class="intro-card-body">
+                    <h2>Before you start</h2>
+                    <p>This screener looks for patterns often linked with dyslexia in adults. <strong>It can't diagnose dyslexia</strong> &mdash; only a qualified professional can do that. There are no right or wrong answers, and your responses stay on your device. Answer based on your everyday experience, and take your time.</p>
+                </div>
+            </div>
+
+            <!-- Background (optional, not scored) -->
             <div class="category">
                 <div class="category-title">
-                    <svg class="speaker-icon" onclick="speakText('Workplace and Career Patterns')" viewBox="0 0 24 24">
+                    <svg class="speaker-icon" onclick="speakText('A bit of background')" viewBox="0 0 24 24">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
-                    <span>Workplace and Career Patterns</span>
+                    <span>A bit of background</span>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I choose jobs or careers that allow me to work around my reading, writing, or organizational challenges')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('Has anyone in your close family, a parent, brother or sister, or your own child, been diagnosed with dyslexia, or found reading and spelling difficult? This one is optional.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I choose jobs or careers that allow me to work around my reading, writing, or organizational challenges.</span>
+                        <span>Has anyone in your close family &mdash; a parent, brother or sister, or your own child &mdash; been diagnosed with dyslexia, or found reading and spelling difficult? <em>(Optional)</em></span>
                     </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q1_1" name="q1" value="1">
-                            <label for="q1_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q1_2" name="q1" value="2">
-                            <label for="q1_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q1_3" name="q1" value="3">
-                            <label for="q1_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q1_4" name="q1" value="4">
-                            <label for="q1_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q1_5" name="q1" value="5">
-                            <label for="q1_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I hide my reading, writing, or organizational difficulties from colleagues, friends, or family members')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I hide my reading, writing, or organizational difficulties from colleagues, friends, or family members.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q2_1" name="q2" value="1">
-                            <label for="q2_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q2_2" name="q2" value="2">
-                            <label for="q2_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q2_3" name="q2" value="3">
-                            <label for="q2_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q2_4" name="q2" value="4">
-                            <label for="q2_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q2_5" name="q2" value="5">
-                            <label for="q2_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I become impatient during planning meetings and sequential tasks, often knowing the solution intuitively')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I become impatient during planning meetings and sequential tasks, often knowing the solution intuitively.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q3_1" name="q3" value="1">
-                            <label for="q3_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q3_2" name="q3" value="2">
-                            <label for="q3_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q3_3" name="q3" value="3">
-                            <label for="q3_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q3_4" name="q3" value="4">
-                            <label for="q3_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q3_5" name="q3" value="5">
-                            <label for="q3_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I decline promotions that involve increased paperwork or administrative responsibilities')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I decline promotions that involve increased paperwork or administrative responsibilities.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q4_1" name="q4" value="1">
-                            <label for="q4_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q4_2" name="q4" value="2">
-                            <label for="q4_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q4_3" name="q4" value="3">
-                            <label for="q4_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q4_4" name="q4" value="4">
-                            <label for="q4_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q4_5" name="q4" value="5">
-                            <label for="q4_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I struggle with sustained focus on single tasks but excel at managing multiple projects simultaneously')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I struggle with sustained focus on single tasks but excel at managing multiple projects simultaneously.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q5_1" name="q5" value="1">
-                            <label for="q5_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q5_2" name="q5" value="2">
-                            <label for="q5_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q5_3" name="q5" value="3">
-                            <label for="q5_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q5_4" name="q5" value="4">
-                            <label for="q5_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q5_5" name="q5" value="5">
-                            <label for="q5_5">Strongly Agree</label>
-                        </div>
+                    <div class="options options-3">
+                        <div class="option"><input type="radio" id="fh_1" name="familyHistory" value="yes"><label for="fh_1">Yes</label></div>
+                        <div class="option"><input type="radio" id="fh_2" name="familyHistory" value="unsure"><label for="fh_2">Not sure</label></div>
+                        <div class="option"><input type="radio" id="fh_3" name="familyHistory" value="no"><label for="fh_3">No</label></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Learning and Cognitive Style -->
+            <!-- Reading History and Habits -->
             <div class="category">
                 <div class="category-title">
-                    <svg class="speaker-icon" onclick="speakText('Learning and Cognitive Style')" viewBox="0 0 24 24">
+                    <svg class="speaker-icon" onclick="speakText('Reading History and Habits')" viewBox="0 0 24 24">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
-                    <span>Learning and Cognitive Style</span>
+                    <span>Reading History and Habits</span>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I excel with hands-on experience, demonstrations, and visual aids rather than traditional instruction')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('As a child, learning to read felt much harder for me than it did for my classmates.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I excel with hands-on experience, demonstrations, and visual aids rather than traditional instruction.</span>
+                        <span>As a child, learning to read felt much harder for me than it did for my classmates.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q6_1" name="q6" value="1">
-                            <label for="q6_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q6_2" name="q6" value="2">
-                            <label for="q6_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q6_3" name="q6" value="3">
-                            <label for="q6_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q6_4" name="q6" value="4">
-                            <label for="q6_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q6_5" name="q6" value="5">
-                            <label for="q6_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q1_1" name="q1" value="1"><label for="q1_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q1_2" name="q1" value="2"><label for="q1_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q1_3" name="q1" value="3"><label for="q1_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q1_4" name="q1" value="4"><label for="q1_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I am either a highly creative out-of-the-box thinker or operate within very structured, self-imposed rules')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I read more slowly than most people I know.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I am either a highly creative "out-of-the-box" thinker or operate within very structured, self-imposed rules.</span>
+                        <span>I read more slowly than most people I know.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q7_1" name="q7" value="1">
-                            <label for="q7_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q7_2" name="q7" value="2">
-                            <label for="q7_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q7_3" name="q7" value="3">
-                            <label for="q7_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q7_4" name="q7" value="4">
-                            <label for="q7_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q7_5" name="q7" value="5">
-                            <label for="q7_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q2_1" name="q2" value="1"><label for="q2_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q2_2" name="q2" value="2"><label for="q2_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q2_3" name="q2" value="3"><label for="q2_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q2_4" name="q2" value="4"><label for="q2_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I overreact to mistakes and set extremely high standards for myself')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('When I have a choice, I avoid reading long passages of text.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I overreact to mistakes and set extremely high standards for myself.</span>
+                        <span>When I have a choice, I avoid reading long passages of text.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q8_1" name="q8" value="1">
-                            <label for="q8_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q8_2" name="q8" value="2">
-                            <label for="q8_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q8_3" name="q8" value="3">
-                            <label for="q8_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q8_4" name="q8" value="4">
-                            <label for="q8_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q8_5" name="q8" value="5">
-                            <label for="q8_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I possess strong street smarts and excel at reading people and situations')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I possess strong "street smarts" and excel at reading people and situations.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q9_1" name="q9" value="1">
-                            <label for="q9_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q9_2" name="q9" value="2">
-                            <label for="q9_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q9_3" name="q9" value="3">
-                            <label for="q9_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q9_4" name="q9" value="4">
-                            <label for="q9_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q9_5" name="q9" value="5">
-                            <label for="q9_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I am easily distracted by background noise and environmental factors')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I am easily distracted by background noise and environmental factors.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q10_1" name="q10" value="1">
-                            <label for="q10_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q10_2" name="q10" value="2">
-                            <label for="q10_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q10_3" name="q10" value="3">
-                            <label for="q10_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q10_4" name="q10" value="4">
-                            <label for="q10_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q10_5" name="q10" value="5">
-                            <label for="q10_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q3_1" name="q3" value="1"><label for="q3_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q3_2" name="q3" value="2"><label for="q3_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q3_3" name="q3" value="3"><label for="q3_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q3_4" name="q3" value="4"><label for="q3_4">Almost Always</label></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Reading and Language Challenges -->
+            <!-- Sounding Out Words -->
             <div class="category">
                 <div class="category-title">
-                    <svg class="speaker-icon" onclick="speakText('Reading and Language Challenges')" viewBox="0 0 24 24">
+                    <svg class="speaker-icon" onclick="speakText('Sounding Out Words')" viewBox="0 0 24 24">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
-                    <span>Reading and Language Challenges</span>
+                    <span>Sounding Out Words</span>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I struggle with unfamiliar fonts and formatting when reading')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I find it hard to sound out an unfamiliar word, even when I can see it written.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I struggle with unfamiliar fonts and formatting when reading.</span>
+                        <span>I find it hard to sound out an unfamiliar word, even when I can see it written.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q11_1" name="q11" value="1">
-                            <label for="q11_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q11_2" name="q11" value="2">
-                            <label for="q11_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q11_3" name="q11" value="3">
-                            <label for="q11_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q11_4" name="q11" value="4">
-                            <label for="q11_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q11_5" name="q11" value="5">
-                            <label for="q11_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q4_1" name="q4" value="1"><label for="q4_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q4_2" name="q4" value="2"><label for="q4_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q4_3" name="q4" value="3"><label for="q4_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q4_4" name="q4" value="4"><label for="q4_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I avoid reading aloud and public speaking when possible')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I mix up similar-sounding words, for example specific and Pacific.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I avoid reading aloud and public speaking when possible.</span>
+                        <span>I mix up similar-sounding words (for example, "specific" and "Pacific").</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q12_1" name="q12" value="1">
-                            <label for="q12_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q12_2" name="q12" value="2">
-                            <label for="q12_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q12_3" name="q12" value="3">
-                            <label for="q12_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q12_4" name="q12" value="4">
-                            <label for="q12_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q12_5" name="q12" value="5">
-                            <label for="q12_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q5_1" name="q5" value="1"><label for="q5_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q5_2" name="q5" value="2"><label for="q5_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q5_3" name="q5" value="3"><label for="q5_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q5_4" name="q5" value="4"><label for="q5_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I frequently need to re-read sentences for understanding')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I have trouble breaking long words into syllables in my head.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I frequently need to re-read sentences for understanding.</span>
+                        <span>I have trouble breaking long words into syllables in my head.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q13_1" name="q13" value="1">
-                            <label for="q13_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q13_2" name="q13" value="2">
-                            <label for="q13_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q13_3" name="q13" value="3">
-                            <label for="q13_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q13_4" name="q13" value="4">
-                            <label for="q13_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q13_5" name="q13" value="5">
-                            <label for="q13_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q6_1" name="q6" value="1"><label for="q6_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q6_2" name="q6" value="2"><label for="q6_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q6_3" name="q6" value="3"><label for="q6_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q6_4" name="q6" value="4"><label for="q6_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I fatigue quickly during reading tasks')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I find it hard to play with the sounds in a word, like saying it without one of its sounds, or swapping the sounds around.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I fatigue quickly during reading tasks.</span>
+                        <span>I find it hard to play with the sounds in a word &mdash; like saying it without one of its sounds, or swapping the sounds around.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q14_1" name="q14" value="1">
-                            <label for="q14_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q14_2" name="q14" value="2">
-                            <label for="q14_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q14_3" name="q14" value="3">
-                            <label for="q14_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q14_4" name="q14" value="4">
-                            <label for="q14_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q14_5" name="q14" value="5">
-                            <label for="q14_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I rely heavily on spell-check and grammar tools')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I rely heavily on spell-check and grammar tools.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q15_1" name="q15" value="1">
-                            <label for="q15_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q15_2" name="q15" value="2">
-                            <label for="q15_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q15_3" name="q15" value="3">
-                            <label for="q15_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q15_4" name="q15" value="4">
-                            <label for="q15_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q15_5" name="q15" value="5">
-                            <label for="q15_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I mispronounce or misuse words without awareness')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I mispronounce or misuse words without awareness.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q16_1" name="q16" value="1">
-                            <label for="q16_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q16_2" name="q16" value="2">
-                            <label for="q16_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q16_3" name="q16" value="3">
-                            <label for="q16_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q16_4" name="q16" value="4">
-                            <label for="q16_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q16_5" name="q16" value="5">
-                            <label for="q16_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q7_1" name="q7" value="1"><label for="q7_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q7_2" name="q7" value="2"><label for="q7_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q7_3" name="q7" value="3"><label for="q7_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q7_4" name="q7" value="4"><label for="q7_4">Almost Always</label></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Memory and Information Processing -->
+            <!-- Visually Similar Words and Spelling -->
             <div class="category">
                 <div class="category-title">
-                    <svg class="speaker-icon" onclick="speakText('Memory and Information Processing')" viewBox="0 0 24 24">
+                    <svg class="speaker-icon" onclick="speakText('Visually Similar Words and Spelling')" viewBox="0 0 24 24">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
-                    <span>Memory and Information Processing</span>
+                    <span>Visually Similar Words and Spelling</span>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I have excellent recall for experiential events but may forget others completely')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I sometimes confuse words that look alike, such as form and from, or trail and trial.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I have excellent recall for experiential events but may forget others completely.</span>
+                        <span>I sometimes confuse words that look alike, such as "form" and "from", or "trail" and "trial".</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q17_1" name="q17" value="1">
-                            <label for="q17_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q17_2" name="q17" value="2">
-                            <label for="q17_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q17_3" name="q17" value="3">
-                            <label for="q17_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q17_4" name="q17" value="4">
-                            <label for="q17_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q17_5" name="q17" value="5">
-                            <label for="q17_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q8_1" name="q8" value="1"><label for="q8_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q8_2" name="q8" value="2"><label for="q8_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q8_3" name="q8" value="3"><label for="q8_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q8_4" name="q8" value="4"><label for="q8_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I have strong facial recognition but difficulty remembering names without memory tricks')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('When I write, I leave out small words like the or is without noticing.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I have strong facial recognition but difficulty remembering names without memory tricks.</span>
+                        <span>When I write, I leave out small words like "the" or "is" without noticing.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q18_1" name="q18" value="1">
-                            <label for="q18_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q18_2" name="q18" value="2">
-                            <label for="q18_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q18_3" name="q18" value="3">
-                            <label for="q18_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q18_4" name="q18" value="4">
-                            <label for="q18_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q18_5" name="q18" value="5">
-                            <label for="q18_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q9_1" name="q9" value="1"><label for="q9_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q9_2" name="q9" value="2"><label for="q9_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q9_3" name="q9" value="3"><label for="q9_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q9_4" name="q9" value="4"><label for="q9_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I struggle with sequential memory and following multi-step verbal instructions')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I write a word and it looks wrong, but I cannot tell what is wrong with it.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I struggle with sequential memory and following multi-step verbal instructions.</span>
+                        <span>I write a word and it looks wrong, but I can't tell what's wrong with it.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q19_1" name="q19" value="1">
-                            <label for="q19_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q19_2" name="q19" value="2">
-                            <label for="q19_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q19_3" name="q19" value="3">
-                            <label for="q19_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q19_4" name="q19" value="4">
-                            <label for="q19_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q19_5" name="q19" value="5">
-                            <label for="q19_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q10_1" name="q10" value="1"><label for="q10_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q10_2" name="q10" value="2"><label for="q10_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q10_3" name="q10" value="3"><label for="q10_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q10_4" name="q10" value="4"><label for="q10_4">Almost Always</label></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Time and Spatial Awareness -->
+            <!-- Word Retrieval and Naming -->
             <div class="category">
                 <div class="category-title">
-                    <svg class="speaker-icon" onclick="speakText('Time and Spatial Awareness')" viewBox="0 0 24 24">
+                    <svg class="speaker-icon" onclick="speakText('Word Retrieval and Naming')" viewBox="0 0 24 24">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
-                    <span>Time and Spatial Awareness</span>
+                    <span>Word Retrieval and Naming</span>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I have difficulty with left/right orientation and cardinal directions')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I know what I want to say, but the word I am reaching for will not come to me.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I have difficulty with left/right orientation and cardinal directions.</span>
+                        <span>I know what I want to say, but the word I'm reaching for won't come to me.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q20_1" name="q20" value="1">
-                            <label for="q20_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q20_2" name="q20" value="2">
-                            <label for="q20_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q20_3" name="q20" value="3">
-                            <label for="q20_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q20_4" name="q20" value="4">
-                            <label for="q20_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q20_5" name="q20" value="5">
-                            <label for="q20_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q11_1" name="q11" value="1"><label for="q11_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q11_2" name="q11" value="2"><label for="q11_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q11_3" name="q11" value="3"><label for="q11_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q11_4" name="q11" value="4"><label for="q11_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I either get lost easily or never forget a location once visited')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I sometimes call an object by the wrong name, for example fridge instead of oven.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I either get lost easily or never forget a location once visited.</span>
+                        <span>I sometimes call an object by the wrong name (e.g., "fridge" instead of "oven").</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q21_1" name="q21" value="1">
-                            <label for="q21_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q21_2" name="q21" value="2">
-                            <label for="q21_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q21_3" name="q21" value="3">
-                            <label for="q21_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q21_4" name="q21" value="4">
-                            <label for="q21_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q21_5" name="q21" value="5">
-                            <label for="q21_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q12_1" name="q12" value="1"><label for="q12_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q12_2" name="q12" value="2"><label for="q12_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q12_3" name="q12" value="3"><label for="q12_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q12_4" name="q12" value="4"><label for="q12_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I have poor time estimation skills, leading to frequent lateness or obsessive punctuality')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I struggle to remember the names of people I have recently met, even when I remember their faces.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I have poor time estimation skills, leading to frequent lateness or obsessive punctuality.</span>
+                        <span>I struggle to remember the names of people I've recently met, even when I remember their faces.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q22_1" name="q22" value="1">
-                            <label for="q22_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q22_2" name="q22" value="2">
-                            <label for="q22_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q22_3" name="q22" value="3">
-                            <label for="q22_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q22_4" name="q22" value="4">
-                            <label for="q22_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q22_5" name="q22" value="5">
-                            <label for="q22_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q13_1" name="q13" value="1"><label for="q13_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q13_2" name="q13" value="2"><label for="q13_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q13_3" name="q13" value="3"><label for="q13_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q13_4" name="q13" value="4"><label for="q13_4">Almost Always</label></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Mathematical and Logical Thinking -->
+            <!-- Working Memory and Sequencing -->
             <div class="category">
                 <div class="category-title">
-                    <svg class="speaker-icon" onclick="speakText('Mathematical and Logical Thinking')" viewBox="0 0 24 24">
+                    <svg class="speaker-icon" onclick="speakText('Working Memory and Sequencing')" viewBox="0 0 24 24">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
-                    <span>Mathematical and Logical Thinking</span>
+                    <span>Working Memory and Sequencing</span>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I understand complex mathematical concepts but struggle to demonstrate knowledge on paper')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('When someone gives me a phone number or short list out loud, I have trouble holding onto it long enough to write it down.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I understand complex mathematical concepts but struggle to demonstrate knowledge on paper.</span>
+                        <span>When someone gives me a phone number or short list out loud, I have trouble holding onto it long enough to write it down.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q23_1" name="q23" value="1">
-                            <label for="q23_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q23_2" name="q23" value="2">
-                            <label for="q23_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q23_3" name="q23" value="3">
-                            <label for="q23_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q23_4" name="q23" value="4">
-                            <label for="q23_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q23_5" name="q23" value="5">
-                            <label for="q23_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q14_1" name="q14" value="1"><label for="q14_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q14_2" name="q14" value="2"><label for="q14_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q14_3" name="q14" value="3"><label for="q14_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q14_4" name="q14" value="4"><label for="q14_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I either excel at mathematics or rely on basic counting methods and calculators')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('Following multi-step verbal instructions is difficult for me.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I either excel at mathematics or rely on basic counting methods and calculators.</span>
+                        <span>Following multi-step verbal instructions is difficult for me.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q24_1" name="q24" value="1">
-                            <label for="q24_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q24_2" name="q24" value="2">
-                            <label for="q24_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q24_3" name="q24" value="3">
-                            <label for="q24_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q24_4" name="q24" value="4">
-                            <label for="q24_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q24_5" name="q24" value="5">
-                            <label for="q24_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q15_1" name="q15" value="1"><label for="q15_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q15_2" name="q15" value="2"><label for="q15_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q15_3" name="q15" value="3"><label for="q15_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q15_4" name="q15" value="4"><label for="q15_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I have difficulty with practical math applications like making change')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I lose my place when reading aloud or reading down a column of numbers.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I have difficulty with practical math applications like making change.</span>
+                        <span>I lose my place when reading aloud or reading down a column of numbers.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q25_1" name="q25" value="1">
-                            <label for="q25_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q25_2" name="q25" value="2">
-                            <label for="q25_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q25_3" name="q25" value="3">
-                            <label for="q25_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q25_4" name="q25" value="4">
-                            <label for="q25_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q25_5" name="q25" value="5">
-                            <label for="q25_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q16_1" name="q16" value="1"><label for="q16_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q16_2" name="q16" value="2"><label for="q16_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q16_3" name="q16" value="3"><label for="q16_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q16_4" name="q16" value="4"><label for="q16_4">Almost Always</label></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Behavioral and Emotional Patterns -->
+            <!-- Written Expression and Organization -->
             <div class="category">
                 <div class="category-title">
-                    <svg class="speaker-icon" onclick="speakText('Behavioral and Emotional Patterns')" viewBox="0 0 24 24">
+                    <svg class="speaker-icon" onclick="speakText('Written Expression and Organization')" viewBox="0 0 24 24">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
-                    <span>Behavioral and Emotional Patterns</span>
+                    <span>Written Expression and Organization</span>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I become easily frustrated, especially in challenging or unfamiliar situations')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('Putting my thoughts in order on paper is much harder than saying them out loud.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I become easily frustrated, especially in challenging or unfamiliar situations.</span>
+                        <span>Putting my thoughts in order on paper is much harder than saying them out loud.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q26_1" name="q26" value="1">
-                            <label for="q26_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q26_2" name="q26" value="2">
-                            <label for="q26_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q26_3" name="q26" value="3">
-                            <label for="q26_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q26_4" name="q26" value="4">
-                            <label for="q26_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q26_5" name="q26" value="5">
-                            <label for="q26_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q17_1" name="q17" value="1"><label for="q17_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q17_2" name="q17" value="2"><label for="q17_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q17_3" name="q17" value="3"><label for="q17_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q17_4" name="q17" value="4"><label for="q17_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I avoid new tasks or situations that might expose my difficulties')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I rely heavily on spellcheck, autocorrect, or someone else to proofread what I write.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I avoid new tasks or situations that might expose my difficulties.</span>
+                        <span>I rely heavily on spellcheck, autocorrect, or someone else to proofread what I write.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q27_1" name="q27" value="1">
-                            <label for="q27_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q27_2" name="q27" value="2">
-                            <label for="q27_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q27_3" name="q27" value="3">
-                            <label for="q27_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q27_4" name="q27" value="4">
-                            <label for="q27_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q27_5" name="q27" value="5">
-                            <label for="q27_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q18_1" name="q18" value="1"><label for="q18_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q18_2" name="q18" value="2"><label for="q18_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q18_3" name="q18" value="3"><label for="q18_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q18_4" name="q18" value="4"><label for="q18_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I struggle with low self-esteem related to academic or professional challenges')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('My handwriting is hard to read, even for me.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I struggle with low self-esteem related to academic or professional challenges.</span>
+                        <span>My handwriting is hard to read, even for me.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q28_1" name="q28" value="1">
-                            <label for="q28_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q28_2" name="q28" value="2">
-                            <label for="q28_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q28_3" name="q28" value="3">
-                            <label for="q28_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q28_4" name="q28" value="4">
-                            <label for="q28_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q28_5" name="q28" value="5">
-                            <label for="q28_5">Strongly Agree</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question">
-                    <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I tend toward extremes: either highly disorganized or compulsively orderly')" viewBox="0 0 24 24">
-                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                        </svg>
-                        <span>I tend toward extremes: either highly disorganized or compulsively orderly.</span>
-                    </div>
-                    <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q29_1" name="q29" value="1">
-                            <label for="q29_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q29_2" name="q29" value="2">
-                            <label for="q29_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q29_3" name="q29" value="3">
-                            <label for="q29_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q29_4" name="q29" value="4">
-                            <label for="q29_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q29_5" name="q29" value="5">
-                            <label for="q29_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q19_1" name="q19" value="1"><label for="q19_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q19_2" name="q19" value="2"><label for="q19_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q19_3" name="q19" value="3"><label for="q19_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q19_4" name="q19" value="4"><label for="q19_4">Almost Always</label></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Additional Characteristics -->
+            <!-- Time and Direction -->
             <div class="category">
                 <div class="category-title">
-                    <svg class="speaker-icon" onclick="speakText('Additional Characteristics')" viewBox="0 0 24 24">
+                    <svg class="speaker-icon" onclick="speakText('Time and Direction')" viewBox="0 0 24 24">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
-                    <span>Additional Characteristics</span>
+                    <span>Time and Direction</span>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I enjoy video games and interactive media')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I mix up left and right, even as an adult.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I enjoy video games and interactive media.</span>
+                        <span>I mix up left and right, even as an adult.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q30_1" name="q30" value="1">
-                            <label for="q30_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q30_2" name="q30" value="2">
-                            <label for="q30_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q30_3" name="q30" value="3">
-                            <label for="q30_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q30_4" name="q30" value="4">
-                            <label for="q30_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q30_5" name="q30" value="5">
-                            <label for="q30_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q20_1" name="q20" value="1"><label for="q20_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q20_2" name="q20" value="2"><label for="q20_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q20_3" name="q20" value="3"><label for="q20_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q20_4" name="q20" value="4"><label for="q20_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I have balance issues or, conversely, am highly athletic')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I have trouble judging how much time has passed or how long a task will take.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I have balance issues or, conversely, am highly athletic.</span>
+                        <span>I have trouble judging how much time has passed or how long a task will take.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q31_1" name="q31" value="1">
-                            <label for="q31_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q31_2" name="q31" value="2">
-                            <label for="q31_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q31_3" name="q31" value="3">
-                            <label for="q31_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q31_4" name="q31" value="4">
-                            <label for="q31_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q31_5" name="q31" value="5">
-                            <label for="q31_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q21_1" name="q21" value="1"><label for="q21_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q21_2" name="q21" value="2"><label for="q21_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q21_3" name="q21" value="3"><label for="q21_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q21_4" name="q21" value="4"><label for="q21_4">Almost Always</label></div>
                     </div>
                 </div>
 
                 <div class="question">
                     <div class="question-text">
-                        <svg class="question-speaker" onclick="speakText('I am sensitive to emotions and energy of others')" viewBox="0 0 24 24">
+                        <svg class="question-speaker" onclick="speakText('I get lost easily, or I find directions like go north or take the third left hard to follow.')" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <span>I am sensitive to emotions and energy of others.</span>
+                        <span>I get lost easily, or I find directions like "go north" or "take the third left" hard to follow.</span>
                     </div>
                     <div class="options">
-                        <div class="option">
-                            <input type="radio" id="q32_1" name="q32" value="1">
-                            <label for="q32_1">Strongly Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q32_2" name="q32" value="2">
-                            <label for="q32_2">Disagree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q32_3" name="q32" value="3">
-                            <label for="q32_3">Neutral</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q32_4" name="q32" value="4">
-                            <label for="q32_4">Agree</label>
-                        </div>
-                        <div class="option">
-                            <input type="radio" id="q32_5" name="q32" value="5">
-                            <label for="q32_5">Strongly Agree</label>
-                        </div>
+                        <div class="option"><input type="radio" id="q22_1" name="q22" value="1"><label for="q22_1">Rarely</label></div>
+                        <div class="option"><input type="radio" id="q22_2" name="q22" value="2"><label for="q22_2">Sometimes</label></div>
+                        <div class="option"><input type="radio" id="q22_3" name="q22" value="3"><label for="q22_3">Often</label></div>
+                        <div class="option"><input type="radio" id="q22_4" name="q22" value="4"><label for="q22_4">Almost Always</label></div>
                     </div>
                 </div>
             </div>
@@ -1104,7 +527,7 @@
                 <span>Check for missing answer(s)</span>
             </div>
             <button type="submit" class="submit-btn" onclick="calculateResults(event)">
-                Complete Assessment
+                Complete Screener
             </button>
         </form>
 
@@ -1113,29 +536,63 @@
             <div class="score-display" id="scoreDisplay"></div>
             <div class="probability-level" id="probabilityLevel"></div>
             <div class="results-text" id="resultsText"></div>
-            
+
+            <div class="family-note" id="familyHistoryNote"></div>
+
             <div class="color-key">
                 <h3>Color Key</h3>
                 <div class="key-items">
-                    <div class="key-item"><span class="key-swatch key-low"></span> Low Probability (0–50%)</div>
-                    <div class="key-item"><span class="key-swatch key-medium"></span> Medium Probability (51–79%)</div>
-                    <div class="key-item"><span class="key-swatch key-high"></span> High Probability (80–100%)</div>
+                    <div class="key-item"><span class="key-swatch key-low"></span> Few Signs (0–30%)</div>
+                    <div class="key-item"><span class="key-swatch key-medium"></span> Some Signs (31–65%)</div>
+                    <div class="key-item"><span class="key-swatch key-high"></span> Many Signs (66–100%)</div>
                 </div>
             </div>
 
             <div class="category-summary" id="categorySummary">
                 <h3>Category Breakdown</h3>
-                <p class="summary-intro">Here's how you responded in each category. Higher scores indicate more frequent experiences of traits associated with dyslexia.</p>
+                <p class="summary-intro">Here's how you responded in each area. Higher scores mean you noticed more of the patterns associated with dyslexia in that area.</p>
                 <div class="category-results" id="categoryResults"></div>
             </div>
-            
-            <div class="disclaimer">
-                <p><strong>Important Disclaimer:</strong> This assessment is for informational purposes only and is not a substitute for professional diagnosis. If you scored in the medium to high probability range, consider consulting with a qualified professional for a comprehensive evaluation.</p>
+
+            <!-- Email capture -->
+            <div class="email-capture">
+                <h3>Want tools that actually help?</h3>
+                <p>Join the <strong>dyslexia.help</strong> list for practical tools, apps, and tips made for dyslexic adults. No spam &mdash; unsubscribe anytime.</p>
+                <form id="emailCaptureForm" class="email-capture-form" novalidate>
+                    <input type="email" id="emailInput" name="email" placeholder="you@example.com" autocomplete="email" aria-label="Your email address" required>
+                    <button type="submit" class="email-btn">Join the list</button>
+                </form>
+                <div class="email-error" id="emailError">Please enter a valid email address.</div>
+                <div class="email-success" id="emailSuccess">
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    <span>You're on the list! We'll be in touch.</span>
+                </div>
             </div>
-            <button class="submit-btn" onclick="resetAssessment()">Take Assessment Again</button>
+
+            <div class="disclaimer">
+                <p><strong>Important:</strong> This is a self-check, not a diagnosis. If your results show many signs of dyslexia, or if you have concerns about reading, writing, or learning, consider speaking with a qualified professional (such as an educational psychologist or speech-language pathologist) for a full evaluation.</p>
+            </div>
+            <button class="submit-btn" onclick="resetAssessment()">Take Screener Again</button>
         </div>
+
+        <!-- Evidence base (always visible, crawlable) -->
+        <footer class="evidence">
+            <h2>The research behind this screener</h2>
+            <p>This screener is not a copy of any single test &mdash; every question was written from scratch. The areas it covers reflect what decades of research most consistently link to dyslexia in adults: early reading history, phonological (sound) processing, spelling and visual word confusion, word retrieval and naming, verbal working memory, written expression, and left/right and time awareness. We include a family-history question because dyslexia is strongly hereditary.</p>
+            <details class="evidence-details">
+                <summary>See the studies and definitions</summary>
+                <ul class="references">
+                    <li>International Dyslexia Association (2025). <em>Definition of Dyslexia.</em> <a href="https://dyslexiaida.org/definition-of-dyslexia/" target="_blank" rel="noopener">dyslexiaida.org</a></li>
+                    <li>British Dyslexia Association. <em>Signs of dyslexia (adult).</em> <a href="https://www.bdadyslexia.org.uk/advice/adults/am-i-dyslexic/signs-of-dyslexia" target="_blank" rel="noopener">bdadyslexia.org.uk</a></li>
+                    <li>Lefly, D. L., &amp; Pennington, B. F. (2000). Reliability and validity of the Adult Reading History Questionnaire. <em>Journal of Learning Disabilities, 33</em>(3), 286–296. <a href="https://pubmed.ncbi.nlm.nih.gov/15505966/" target="_blank" rel="noopener">PubMed</a></li>
+                    <li>Tamboer, P., &amp; Vorst, H. C. M. (2015). A new self-report inventory of dyslexia for students: criterion and construct validity. <em>Dyslexia, 21</em>(1), 1–34. <a href="https://pubmed.ncbi.nlm.nih.gov/25628151/" target="_blank" rel="noopener">PubMed</a></li>
+                    <li>Melby-Lervåg, M., Lyster, S.-A. H., &amp; Hulme, C. (2012). Phonological skills and their role in learning to read: a meta-analytic review. <em>Psychological Bulletin, 138</em>(2), 322–352. <a href="https://pubmed.ncbi.nlm.nih.gov/22250824/" target="_blank" rel="noopener">PubMed</a></li>
+                </ul>
+            </details>
+            <p class="medical-disclaimer"><strong>This is a screening tool, not a medical diagnosis.</strong> A high score does not confirm dyslexia, and a low score does not rule it out. Only a qualified professional can diagnose dyslexia through a full assessment. If you have concerns, please seek professional advice.</p>
+        </footer>
     </div>
 
-    <script src="script.js?v=10"></script>
+    <script src="ida-style.js"></script>
 </body>
 </html>
