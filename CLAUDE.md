@@ -51,7 +51,6 @@ adult-dyslexia-survey/
 ├── .claude/launch.json     # Preview-server config (python server.py, port 5000)
 ├── results_categories.png  # Reference screenshot of category breakdown
 ├── results_full.png        # Reference screenshot of full results page
-├── replit.md               # Original Replit-generated project overview (kept for context)
 ├── attached_assets/        # Asset folder
 └── CLAUDE.md               # This file
 ```
@@ -173,5 +172,5 @@ This is part of the **dyslexia.help ecosystem**. Same playbook as Multi-Clipboar
 ## Bob's Preferences & Notes
 
 - **Non-developer** — prefers plain English, step-by-step instructions
-- Project was on **Replit** originally; the `replit.md` file is leftover context from there
+- Project was on **Replit** originally; its leftover files (`.replit`, `replit.md`) were deleted 2026-07-23 — this file is the project history now
 - Bob's GitHub username: `bgeorgeff`
