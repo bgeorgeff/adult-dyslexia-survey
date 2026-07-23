@@ -9,19 +9,34 @@ There are three jobs:
 
 ---
 
-## 1. Rotate (replace) your Resend API key
+## 1. Rotate your Resend API key — and split it into two
 
-Your old key is compromised. Kill it and make a new one.
+Your old key is compromised. It also turned out to be the **only** key on the account, shared by
+this survey AND the **Learn Anything** app's two notification emails (`notify-new-user`,
+`send-feedback` — see that project's `CLAUDE.md`). One shared key means rotating it for one project
+silently breaks the other. Fix that now by creating **two** keys instead of one:
 
-1. Go to **https://resend.com** and log in.
-2. In the left menu, click **API Keys**.
-3. Find the old key in the list. Click the **⋯** (or trash-can) on its row → **Delete** / **Revoke** → confirm. It's now dead and can't be used by anyone.
-4. Click **Create API Key** (top right).
+1. Go to **https://resend.com** and log in → **API Keys** (left menu).
+2. Delete the old key (⋯ or trash-can on its row → **Delete**/**Revoke** → confirm). *(If you already
+   did this, skip to step 3.)*
+3. Click **Create API Key** → make **Key 1**:
    - **Name:** `dyslexia-screener`
-   - **Permission:** choose **Full access** (adding contacts needs more than "Sending access").
-   - Click **Add**.
-5. Resend shows the new key **once** (starts with `re_...`). Click **Copy**.
-   - ⚠️ **Do not paste it into chat or email.** The only place it goes is Cloudflare, in step 3. If you lose it, just delete it and make another — no harm done.
+   - **Permission:** **Full access** (this survey adds people to Resend Contacts, which needs more
+     than "Sending access").
+   - Click **Add**, then **Copy**. This one goes into **Cloudflare** (step 3 below) — not urgent
+     until you've done step 2 and have a Cloudflare project to paste it into.
+4. Click **Create API Key** again → make **Key 2**:
+   - **Name:** `learn-anything`
+   - **Permission:** **Sending access** (Learn Anything only sends emails — never touches Contacts —
+     so this narrower, safer permission is enough).
+   - **Domain:** leave as **All Domains** (Learn Anything sends from two different addresses, and
+     restricting to one could silently break the other).
+   - Click **Add**, then **Copy**. This one goes into **Supabase**, for the Learn Anything project —
+     see that project's `CLAUDE.md` for the exact steps (Settings → Edge Functions → Secrets →
+     `RESEND_API_KEY`). Do this one **soon**, since Learn Anything is live and its notification
+     emails go silent until it's updated.
+   - ⚠️ **Neither key goes in chat or email — ever.** Paste each one only into its own dashboard
+     (Cloudflare or Supabase). If you ever lose one, just delete it and make another.
 
 ---
 
@@ -49,7 +64,8 @@ First the code needs to be on GitHub (it lives at https://github.com/bgeorgeff/a
 3. Click **Add**.
    - **Type:** **Secret** (encrypted — important for an API key)
    - **Variable name:** `RESEND_API_KEY`  ← type it exactly, all caps
-   - **Value:** paste the `re_...` key from step 1.
+   - **Value:** paste **Key 1** (`dyslexia-screener`) from step 1. Do NOT use Key 2 here — that one's
+     for Learn Anything/Supabase, not this project.
    - Make sure it's applied to **Production** (and Preview if offered).
    - Click **Save**.
 4. **Redeploy so the key takes effect:** go to the **Deployments** tab → on the latest deployment click **⋯** → **Retry deployment** (or just push any commit).
